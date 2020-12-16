@@ -7,6 +7,8 @@ use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_finality_grandpa::AuthorityId as GrandpaId;
 use sp_runtime::traits::{Verify, IdentifyAccount};
 use sc_service::ChainType;
+use sp_core::crypto::AccountId32;
+use node_template_runtime::ContractsConfig;
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -91,7 +93,6 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 			// Initial PoA authorities
 			vec![
 				authority_keys_from_seed("Alice"),
-				authority_keys_from_seed("Bob"),
 			],
 			// Sudo account
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
@@ -152,6 +153,13 @@ fn testnet_genesis(
 		pallet_sudo: Some(SudoConfig {
 			// Assign network admin rights.
 			key: root_key,
+		}),
+		/*** Add This Block ***/
+		pallet_contracts: Some(ContractsConfig {
+			current_schedule: pallet_contracts::Schedule {
+				enable_println:true,
+				..Default::default()
+			},
 		}),
 	}
 }
